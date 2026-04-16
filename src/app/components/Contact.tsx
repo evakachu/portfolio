@@ -17,7 +17,7 @@ const contactInfo = [
   {
     icon: MapPin,
     label: 'Localisation',
-    value: 'Nancy, France',
+    value: 'Nancy & Paris, France',
     href: null,
   },
 ];
