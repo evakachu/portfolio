@@ -2,6 +2,7 @@ import { motion } from 'motion/react';
 import { Briefcase, Award, Video } from 'lucide-react';
 import { useState } from 'react';
 import { ImageModal } from './ImageModal';
+import dataObserverLogo from '../../imports/data-observer-logo.svg';
 
 const experiences = [
   {
@@ -12,7 +13,8 @@ const experiences = [
     description: 'Veille technologique sur les outils IA pour TPE/PME, analyse des besoins métier, tests et évaluation de solutions. Développement de logiciels sur mesure pour automatiser et faciliter les tâches quotidiennes des gérants de TPE/PME : gestion administrative, communication, suivi client et optimisation des processus.',
     tags: ['IA', 'Développement logiciel', 'Automatisation', 'TPE/PME', 'Veille technologique'],
     images: [],
-    logo: null,
+    logo: dataObserverLogo,
+    logoVariant: 'wide',
     stats: [
       { label: 'Temps gagné / semaine', value: '+8h', icon: '⚡' },
       { label: 'Productivité clients', value: '+30%', icon: '💎' },
@@ -158,6 +160,7 @@ export function Experiences() {
             {experiences.map((exp, index) => {
               const Icon = getIconForType(exp.type);
               const isEven = index % 2 === 0;
+              const isWideLogo = 'logoVariant' in exp && exp.logoVariant === 'wide';
 
               return (
                 <motion.div
@@ -198,7 +201,11 @@ export function Experiences() {
                             transition={{ duration: 0.5, delay: 0.2 }}
                             className="mb-4 flex justify-center sm:justify-start"
                           >
-                            <div className="relative w-16 h-16 bg-card border-2 border-primary/30 p-2 group-hover:border-primary/50 transition-all duration-300">
+                            <div
+                              className={`relative border-2 border-primary/30 p-2 group-hover:border-primary/50 transition-all duration-300 ${
+                                isWideLogo ? 'w-28 h-16 bg-card/80' : 'w-16 h-16 bg-card'
+                              }`}
+                            >
                               <img
                                 src={exp.logo}
                                 alt={`${exp.company} logo`}
