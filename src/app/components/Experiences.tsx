@@ -158,7 +158,6 @@ export function Experiences() {
             {experiences.map((exp, index) => {
               const Icon = getIconForType(exp.type);
               const isEven = index % 2 === 0;
-              const showAwardHighlight = exp.company === 'Exercice de cyberdéfense' && exp.images.length === 0;
 
               return (
                 <motion.div
@@ -323,33 +322,6 @@ export function Experiences() {
                                   </div>
                                 </motion.div>
                               ))}
-                            </div>
-                          </motion.div>
-                        )}
-
-                        {showAwardHighlight && (
-                          <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.6, delay: 0.35 }}
-                            className="mt-6 pt-6 border-t-2 border-primary/20"
-                          >
-                            <div className="relative max-w-sm mx-auto overflow-hidden border-2 border-secondary/40 bg-gradient-to-br from-secondary/10 via-card to-accent/10 p-5 text-center">
-                              <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-secondary" />
-                              <div className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-accent" />
-                              <div className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-accent" />
-                              <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-secondary" />
-
-                              <div className="text-xs font-mono tracking-[0.35em] text-secondary/90">
-                                CYBER HUMANUM EST
-                              </div>
-                              <div className="mt-3 text-lg text-foreground">
-                                Victoire collective en exercice de lutte informationnelle
-                              </div>
-                              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                                Lauréate avec l&apos;équipe L2I sur un scénario opérationnel de cyberdéfense et d&apos;analyse d&apos;influence.
-                              </p>
                             </div>
                           </motion.div>
                         )}
