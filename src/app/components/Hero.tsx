@@ -441,12 +441,14 @@ export function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8 }}
-              className={`mt-8 ${compactLayout ? 'grid grid-cols-1 gap-3 sm:grid-cols-3' : 'flex flex-wrap gap-3'}`}
+              className={`mt-8 ${compactLayout ? 'grid grid-cols-2 gap-3' : 'flex flex-wrap gap-3'}`}
             >
               {[
                 { label: '📍 Nancy, France', border: 'border-primary/30', bg: 'bg-primary/5', accent: 'bg-primary', edge: 'left' },
-                { label: '24 ans', border: 'border-secondary/30', bg: 'bg-secondary/5', accent: 'bg-secondary', edge: 'right' },
-                { label: 'Permis B', border: 'border-accent/30', bg: 'bg-accent/5', accent: 'bg-accent', edge: 'bottom' },
+                { label: 'Paris, France', border: 'border-secondary/30', bg: 'bg-secondary/5', accent: 'bg-secondary', edge: 'right' },
+                { label: 'Bac+5 (en cours)', border: 'border-accent/30', bg: 'bg-accent/5', accent: 'bg-accent', edge: 'bottom' },
+                { label: '24 ans', border: 'border-primary/30', bg: 'bg-primary/5', accent: 'bg-primary', edge: 'right' },
+                { label: 'Permis B', border: 'border-secondary/30', bg: 'bg-secondary/5', accent: 'bg-secondary', edge: 'bottom' },
               ].map((pill, index) => (
                 <motion.div
                   key={pill.label}
