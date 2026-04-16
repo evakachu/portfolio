@@ -16,8 +16,8 @@ const experiences = [
     logo: dataObserverLogo,
     logoVariant: 'wide',
     stats: [
-      { label: 'Temps gagné / semaine', value: '+8h', icon: '⚡' },
-      { label: 'Productivité clients', value: '+30%', icon: '💎' },
+      { label: 'Temps gagné / semaine', value: '2h', icon: '⚡' },
+      { label: 'Productivité clients', value: '+20%', icon: '💎' },
     ],
   },
   {
@@ -66,7 +66,7 @@ const experiences = [
     logo: 'https://media.licdn.com/dms/image/v2/D4E0BAQFYxtTV9oc2Jg/company-logo_200_200/company-logo_200_200/0/1709756433429/initconseil_logo?e=2147483647&v=beta&t=mju-wZ5mzhxTGj8IQCmOxpy3gS31vQZusN6TX7kvj84',
     stats: [
       { label: 'Vues clients', value: '+1M', icon: '📈' },
-      { label: 'Croissance engagement', value: '+85%', icon: '🚀' },
+      { label: 'Interactions sur certains contenus', value: '+25%', icon: '🚀' },
     ],
   },
   {
