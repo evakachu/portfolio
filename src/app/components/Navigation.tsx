@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { Menu, X } from 'lucide-react';
+import { useLayoutMode, type LayoutMode } from './ui/layout-mode';
 
 const navItems = [
   { label: 'Accueil', href: '#hero' },
@@ -11,9 +12,60 @@ const navItems = [
   { label: 'Contact', href: '#contact' },
 ];
 
+const layoutOptions: Array<{ label: string; value: LayoutMode }> = [
+  { label: 'Auto', value: 'auto' },
+  { label: 'Mobile', value: 'mobile' },
+  { label: 'Ordi', value: 'desktop' },
+];
+
+function LayoutModeSelector({
+  layoutMode,
+  setLayoutMode,
+  compact = false,
+}: {
+  layoutMode: LayoutMode;
+  setLayoutMode: (nextMode: LayoutMode) => void;
+  compact?: boolean;
+}) {
+  return (
+    <div
+      className={`inline-flex items-center gap-1 border-2 border-primary/20 bg-card/85 p-1 backdrop-blur-md ${
+        compact ? 'w-full' : ''
+      }`}
+    >
+      {layoutOptions.map((option) => {
+        const isActive = layoutMode === option.value;
+
+        return (
+          <button
+            key={option.value}
+            type="button"
+            onClick={() => setLayoutMode(option.value)}
+            aria-pressed={isActive}
+            className={`relative flex items-center justify-center px-3 py-2 text-[11px] font-mono uppercase tracking-[0.2em] transition-all duration-300 ${
+              compact ? 'flex-1' : ''
+            } ${
+              isActive
+                ? 'bg-primary text-primary-foreground shadow-[0_0_18px_rgba(91,229,132,0.22)]'
+                : 'text-muted-foreground hover:bg-primary/10 hover:text-foreground'
+            }`}
+          >
+            <span className="relative z-10">{option.label}</span>
+            {isActive && <span className="absolute right-1 top-1 h-1.5 w-1.5 bg-primary-foreground/70" />}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 export function Navigation() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { layoutMode, setLayoutMode, isMobileLayout, detectedMobile, resolvedLayoutMode } =
+    useLayoutMode();
+
+  const useCompactNavigation = detectedMobile || isMobileLayout;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -23,6 +75,19 @@ export function Navigation() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (!useCompactNavigation) {
+      setMobileMenuOpen(false);
+      return;
+    }
+
+    document.body.style.overflow = mobileMenuOpen ? 'hidden' : '';
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileMenuOpen, useCompactNavigation]);
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
@@ -38,24 +103,20 @@ export function Navigation() {
       <motion.nav
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled
-            ? 'bg-card/95 backdrop-blur-xl border-b-2 border-primary/20 shadow-2xl'
-            : 'bg-transparent'
+        className={`fixed left-0 right-0 top-0 z-50 transition-all duration-300 ${
+          scrolled ? 'border-b-2 border-primary/20 bg-card/95 shadow-2xl backdrop-blur-xl' : 'bg-transparent'
         }`}
       >
-        {/* Pixel accent line */}
         {scrolled && (
           <motion.div
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
-            className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-primary via-secondary to-accent origin-left"
+            className="absolute bottom-0 left-0 right-0 h-0.5 origin-left bg-gradient-to-r from-primary via-secondary to-accent"
           />
         )}
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex min-h-16 items-center justify-between gap-3 py-2">
             <motion.a
               href="#hero"
               onClick={(e) => handleNavClick(e, '#hero')}
@@ -64,127 +125,162 @@ export function Navigation() {
               whileTap={{ scale: 0.95 }}
             >
               <div className="flex items-center gap-3">
-                {/* Voxel Logo */}
-                <div className="relative w-10 h-10 bg-gradient-to-br from-primary/20 to-secondary/20 border-2 border-primary/40 flex items-center justify-center overflow-hidden group-hover:border-primary transition-all duration-300">
-                  <div className="w-5 h-5 bg-primary group-hover:scale-110 transition-transform duration-300" style={{
-                    boxShadow: '0 0 20px rgba(91, 229, 132, 0.6), inset 0 0 10px rgba(91, 229, 132, 0.3)'
-                  }} />
-                  {/* Corner pixels */}
-                  <div className="absolute top-0 left-0 w-1.5 h-1.5 bg-primary" />
-                  <div className="absolute top-0 right-0 w-1.5 h-1.5 bg-secondary" />
-                  <div className="absolute bottom-0 left-0 w-1.5 h-1.5 bg-accent" />
-                  <div className="absolute bottom-0 right-0 w-1.5 h-1.5 bg-primary" />
+                <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden border-2 border-primary/40 bg-gradient-to-br from-primary/20 to-secondary/20 transition-all duration-300 group-hover:border-primary">
+                  <div
+                    className="h-5 w-5 bg-primary transition-transform duration-300 group-hover:scale-110"
+                    style={{
+                      boxShadow: '0 0 20px rgba(91, 229, 132, 0.6), inset 0 0 10px rgba(91, 229, 132, 0.3)',
+                    }}
+                  />
+                  <div className="absolute left-0 top-0 h-1.5 w-1.5 bg-primary" />
+                  <div className="absolute right-0 top-0 h-1.5 w-1.5 bg-secondary" />
+                  <div className="absolute bottom-0 left-0 h-1.5 w-1.5 bg-accent" />
+                  <div className="absolute bottom-0 right-0 h-1.5 w-1.5 bg-primary" />
                 </div>
-                <span className="text-primary tracking-widest font-display text-lg group-hover:text-secondary transition-colors duration-300">EC</span>
+                <div className="flex flex-col">
+                  <span className="font-display text-lg tracking-widest text-primary transition-colors duration-300 group-hover:text-secondary">
+                    EC
+                  </span>
+                  <span className="hidden text-[10px] font-mono uppercase tracking-[0.22em] text-muted-foreground sm:block">
+                    {resolvedLayoutMode === 'mobile' ? 'Vue mobile' : 'Vue ordi'}
+                  </span>
+                </div>
               </div>
             </motion.a>
 
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-1">
-              {navItems.map((item, index) => (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  onClick={(e) => handleNavClick(e, item.href)}
-                  className="relative px-4 py-2 text-sm text-muted-foreground hover:text-primary transition-all duration-300 group overflow-hidden"
-                >
-                  <span className="relative z-10">{item.label}</span>
-                  {/* Pixel underline */}
-                  <span className="absolute bottom-1 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300" />
-                  {/* Hover background */}
-                  <span className="absolute inset-0 bg-primary/5 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
-                  {/* Pixel accent */}
-                  <motion.span
-                    className="absolute top-1 right-1 w-1 h-1 bg-primary opacity-0 group-hover:opacity-100"
-                    initial={{ scale: 0 }}
-                    whileHover={{ scale: 1 }}
-                  />
-                </a>
-              ))}
-            </div>
+            {!useCompactNavigation && (
+              <div className="flex items-center gap-4">
+                <LayoutModeSelector layoutMode={layoutMode} setLayoutMode={setLayoutMode} />
 
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden relative p-2 text-foreground hover:text-primary transition-colors border-2 border-primary/30 hover:border-primary/60 bg-card/50 hover:bg-primary/10 group"
-            >
-              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-              {/* Corner pixel */}
-              <div className="absolute top-0 right-0 w-1.5 h-1.5 bg-primary opacity-0 group-hover:opacity-100 transition-opacity" />
-            </button>
+                <div className="flex items-center gap-1">
+                  {navItems.map((item) => (
+                    <a
+                      key={item.href}
+                      href={item.href}
+                      onClick={(e) => handleNavClick(e, item.href)}
+                      className="group relative overflow-hidden px-4 py-2 text-sm text-muted-foreground transition-all duration-300 hover:text-primary"
+                    >
+                      <span className="relative z-10">{item.label}</span>
+                      <span className="absolute bottom-1 left-0 h-0.5 w-0 bg-primary transition-all duration-300 group-hover:w-full" />
+                      <span className="absolute inset-0 origin-left scale-x-0 bg-primary/5 transition-transform duration-300 group-hover:scale-x-100" />
+                      <motion.span
+                        className="absolute right-1 top-1 h-1 w-1 bg-primary opacity-0 group-hover:opacity-100"
+                        initial={{ scale: 0 }}
+                        whileHover={{ scale: 1 }}
+                      />
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {useCompactNavigation && (
+              <div className="flex items-center gap-2">
+                <div className="hidden rounded-none border border-primary/20 bg-card/70 px-2 py-1 text-[10px] font-mono uppercase tracking-[0.22em] text-muted-foreground sm:block">
+                  {layoutMode === 'auto' ? 'Auto' : resolvedLayoutMode === 'mobile' ? 'Mobile' : 'Ordi'}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setMobileMenuOpen((current) => !current)}
+                  className="group relative border-2 border-primary/30 bg-card/50 p-2 text-foreground transition-colors hover:border-primary/60 hover:bg-primary/10 hover:text-primary"
+                  aria-expanded={mobileMenuOpen}
+                  aria-label={mobileMenuOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
+                >
+                  {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                  <div className="absolute right-0 top-0 h-1.5 w-1.5 bg-primary opacity-0 transition-opacity group-hover:opacity-100" />
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </motion.nav>
 
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
+      {useCompactNavigation && mobileMenuOpen && (
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
-          className="fixed inset-0 z-40 bg-background/98 backdrop-blur-2xl md:hidden pt-16"
+          className="fixed inset-0 z-40 overflow-y-auto bg-background/98 pt-20 backdrop-blur-2xl"
         >
-          {/* Pixel grid background */}
-          <div className="absolute inset-0 opacity-[0.02]" style={{
-            backgroundImage: `
-              linear-gradient(rgba(91, 229, 132, 0.5) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(91, 229, 132, 0.5) 1px, transparent 1px)
-            `,
-            backgroundSize: '24px 24px',
-            imageRendering: 'pixelated',
-          }} />
+          <div
+            className="absolute inset-0 opacity-[0.02]"
+            style={{
+              backgroundImage: `
+                linear-gradient(rgba(91, 229, 132, 0.5) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(91, 229, 132, 0.5) 1px, transparent 1px)
+              `,
+              backgroundSize: '24px 24px',
+              imageRendering: 'pixelated',
+            }}
+          />
 
-          <div className="relative flex flex-col items-center justify-center h-full gap-8 px-6">
-            {navItems.map((item, index) => (
-              <motion.a
-                key={item.href}
-                href={item.href}
-                onClick={(e) => handleNavClick(e, item.href)}
-                initial={{ opacity: 0, x: -30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.08, type: "spring" }}
-                className="relative text-3xl text-foreground hover:text-primary transition-all duration-300 group font-display"
-              >
-                <span className="relative z-10">{item.label}</span>
-                {/* Pixel decorations */}
-                <motion.div
-                  className="absolute -left-8 top-1/2 -translate-y-1/2 w-4 h-4 border-2 border-primary opacity-0 group-hover:opacity-100"
-                  initial={{ x: -10 }}
-                  whileHover={{ x: 0 }}
-                />
-                <motion.div
-                  className="absolute -right-8 top-1/2 -translate-y-1/2 w-3 h-3 bg-secondary opacity-0 group-hover:opacity-100"
-                  initial={{ x: 10 }}
-                  whileHover={{ x: 0 }}
-                />
-              </motion.a>
-            ))}
+          <div className="relative flex min-h-full flex-col justify-between gap-10 px-6 pb-10">
+            <div className="mx-auto w-full max-w-sm space-y-6">
+              <div className="space-y-3 pt-2">
+                <p className="text-center text-xs font-mono uppercase tracking-[0.28em] text-primary/80">
+                  Choisir l&apos;affichage
+                </p>
+                <LayoutModeSelector layoutMode={layoutMode} setLayoutMode={setLayoutMode} compact />
+                <p className="text-center text-xs leading-relaxed text-muted-foreground">
+                  Auto suit l&apos;écran, Mobile compacte davantage, Ordi garde une mise en page plus large quand l&apos;espace le permet.
+                </p>
+              </div>
 
-            {/* Decorative elements */}
-            <motion.div
-              className="absolute top-20 left-10 w-6 h-6 border-2 border-primary/30"
-              animate={{
-                rotate: [0, 90, 180, 270, 360],
-                scale: [1, 1.1, 1],
-              }}
-              transition={{
-                duration: 8,
-                repeat: Infinity,
-                ease: "linear",
-              }}
-            />
-            <motion.div
-              className="absolute bottom-20 right-10 w-4 h-4 bg-accent/30"
-              animate={{
-                y: [0, -10, 0],
-                opacity: [0.3, 0.7, 0.3],
-              }}
-              transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            />
+              <div className="flex flex-col items-center justify-center gap-7 pt-4">
+                {navItems.map((item, index) => (
+                  <motion.a
+                    key={item.href}
+                    href={item.href}
+                    onClick={(e) => handleNavClick(e, item.href)}
+                    initial={{ opacity: 0, x: -30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.08, type: 'spring' }}
+                    className="group relative font-display text-3xl text-foreground transition-all duration-300 hover:text-primary"
+                  >
+                    <span className="relative z-10">{item.label}</span>
+                    <motion.div
+                      className="absolute -left-8 top-1/2 h-4 w-4 -translate-y-1/2 border-2 border-primary opacity-0 group-hover:opacity-100"
+                      initial={{ x: -10 }}
+                      whileHover={{ x: 0 }}
+                    />
+                    <motion.div
+                      className="absolute -right-8 top-1/2 h-3 w-3 -translate-y-1/2 bg-secondary opacity-0 group-hover:opacity-100"
+                      initial={{ x: 10 }}
+                      whileHover={{ x: 0 }}
+                    />
+                  </motion.a>
+                ))}
+              </div>
+            </div>
+
+            <div className="pointer-events-none absolute left-10 top-24">
+              <motion.div
+                className="h-6 w-6 border-2 border-primary/30"
+                animate={{
+                  rotate: [0, 90, 180, 270, 360],
+                  scale: [1, 1.1, 1],
+                }}
+                transition={{
+                  duration: 8,
+                  repeat: Infinity,
+                  ease: 'linear',
+                }}
+              />
+            </div>
+            <div className="pointer-events-none absolute bottom-20 right-10">
+              <motion.div
+                className="h-4 w-4 bg-accent/30"
+                animate={{
+                  y: [0, -10, 0],
+                  opacity: [0.3, 0.7, 0.3],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }}
+              />
+            </div>
           </div>
         </motion.div>
       )}

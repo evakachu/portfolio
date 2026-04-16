@@ -3,6 +3,7 @@ import { Mail, MapPin, Send, Linkedin } from 'lucide-react';
 import { useState } from 'react';
 import { PixelInput, PixelTextarea } from './PixelInput';
 import { PixelButton } from './PixelButton';
+import { useLayoutMode } from './ui/layout-mode';
 
 const FORM_ENDPOINT = 'https://formsubmit.co/ajax/evacmn@outlook.fr';
 
@@ -36,6 +37,8 @@ export function Contact() {
     type: 'idle',
     message: '',
   });
+  const { isMobileLayout, detectedMobile } = useLayoutMode();
+  const compactLayout = detectedMobile || isMobileLayout;
 
   const createMailtoLink = () =>
     `mailto:evacmn@outlook.fr?subject=${encodeURIComponent(
@@ -193,14 +196,14 @@ export function Contact() {
           </p>
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-8">
+        <div className="grid gap-8 lg:grid-cols-2">
           {/* Contact Info */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="space-y-6"
+            className="order-2 space-y-6 lg:order-1"
           >
             <div>
               <h3 className="text-xl mb-6">Informations de contact</h3>
@@ -291,8 +294,9 @@ export function Contact() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
+            className="order-1 lg:order-2"
           >
-            <div className="relative p-8 bg-card/50 border border-primary/20">
+            <div className={`relative border border-primary/20 bg-card/50 ${compactLayout ? 'p-6' : 'p-8'}`}>
               {/* Corner Accents */}
               <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-primary" />
               <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-primary" />

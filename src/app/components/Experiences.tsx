@@ -3,6 +3,7 @@ import { Briefcase, Award, Video } from 'lucide-react';
 import { useState } from 'react';
 import { ImageModal } from './ImageModal';
 import dataObserverLogo from '../../imports/data-observer-logo.svg';
+import { useLayoutMode } from './ui/layout-mode';
 
 const experiences = [
   {
@@ -94,6 +95,8 @@ export function Experiences() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [currentImages, setCurrentImages] = useState<string[]>([]);
+  const { isMobileLayout, detectedMobile } = useLayoutMode();
+  const compactLayout = detectedMobile || isMobileLayout;
 
   const openModal = (images: string[], index: number) => {
     setCurrentImages(images);
@@ -120,7 +123,7 @@ export function Experiences() {
   };
 
   return (
-    <section id="experiences" className="py-20 sm:py-32 relative overflow-hidden">
+    <section id="experiences" className="relative overflow-hidden py-20 sm:py-32">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute inset-0" style={{
@@ -135,7 +138,7 @@ export function Experiences() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="mb-12 text-center sm:mb-16"
         >
           <div className="inline-block mb-4">
             <div className="flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/30">
@@ -179,7 +182,7 @@ export function Experiences() {
                   {/* Content */}
                   <div className={`w-full sm:w-[calc(50%-2rem)] ${isEven ? 'sm:text-right' : 'sm:text-left'}`}>
                     <div className="group relative">
-                      <div className="p-6 bg-card/50 border border-primary/20 hover:border-primary/40 transition-all duration-300">
+                      <div className="border border-primary/20 bg-card/50 p-5 transition-all duration-300 hover:border-primary/40 sm:p-6">
                         {/* Corner Accents */}
                         <div className="absolute top-0 left-0 w-2 h-2 bg-primary" />
                         <div className="absolute top-0 right-0 w-2 h-2 bg-primary" />
@@ -218,7 +221,7 @@ export function Experiences() {
                           </motion.div>
                         )}
 
-                        <h3 className="text-xl mb-2">{exp.role}</h3>
+                        <h3 className="mb-2 text-lg sm:text-xl">{exp.role}</h3>
                         <div className="text-primary mb-1">{exp.company}</div>
                         <div className="text-sm text-muted-foreground mb-4">{exp.type}</div>
                         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
@@ -246,7 +249,15 @@ export function Experiences() {
                             transition={{ duration: 0.6, delay: 0.3 }}
                             className="mt-6 pt-6 border-t-2 border-primary/20"
                           >
-                            <div className={`grid gap-4 ${exp.stats.length === 1 ? 'grid-cols-1 max-w-sm mx-auto' : 'grid-cols-2'}`}>
+                            <div
+                              className={`grid gap-4 ${
+                                exp.stats.length === 1
+                                  ? 'grid-cols-1 max-w-sm mx-auto'
+                                  : compactLayout
+                                    ? 'grid-cols-1 sm:grid-cols-2'
+                                    : 'grid-cols-2'
+                              }`}
+                            >
                               {exp.stats.map((stat, statIndex) => (
                                 <motion.div
                                   key={statIndex}
@@ -256,7 +267,7 @@ export function Experiences() {
                                   transition={{ duration: 0.5, delay: 0.4 + statIndex * 0.1 }}
                                   className="relative group"
                                 >
-                                  <div className="relative p-6 bg-gradient-to-br from-primary/10 to-secondary/10 border-2 border-primary/30 overflow-hidden group-hover:border-primary/60 transition-all duration-300">
+                                  <div className="relative overflow-hidden border-2 border-primary/30 bg-gradient-to-br from-primary/10 to-secondary/10 p-5 transition-all duration-300 group-hover:border-primary/60 sm:p-6">
                                     {/* XP Gain Animation */}
                                     <motion.div
                                       className="absolute inset-0 bg-gradient-to-t from-primary/20 to-transparent"
@@ -388,7 +399,7 @@ export function Experiences() {
                               </motion.div>
                             ) : (
                               /* Grid pour plusieurs images (Saint-Mihiel) */
-                              <div className="grid grid-cols-3 gap-3">
+                              <div className={`grid gap-3 ${compactLayout ? 'grid-cols-2' : 'grid-cols-3'}`}>
                                 {exp.images.slice(0, 6).map((image, imgIndex) => (
                                   <motion.div
                                     key={imgIndex}

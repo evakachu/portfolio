@@ -65,7 +65,7 @@ export function ImageModal({ isOpen, imageSrc, onClose, onPrev, onNext, hasMulti
             exit={{ opacity: 0, scale: 0.8 }}
             transition={{ delay: 0.1 }}
             onClick={onClose}
-            className="absolute top-6 right-6 z-10 p-3 bg-card/90 backdrop-blur-sm border-2 border-primary/40 hover:border-primary/70 transition-all duration-300 group"
+            className="absolute right-4 top-4 z-10 border-2 border-primary/40 bg-card/90 p-2.5 transition-all duration-300 group hover:border-primary/70 sm:right-6 sm:top-6 sm:p-3"
           >
             <X className="w-6 h-6 text-primary" />
             {/* Pixel corners */}
@@ -84,7 +84,7 @@ export function ImageModal({ isOpen, imageSrc, onClose, onPrev, onNext, hasMulti
                 e.stopPropagation();
                 onPrev();
               }}
-              className="absolute left-6 z-10 p-3 bg-card/90 backdrop-blur-sm border-2 border-secondary/40 hover:border-secondary/70 transition-all duration-300 group"
+              className="absolute left-3 top-1/2 z-10 -translate-y-1/2 border-2 border-secondary/40 bg-card/90 p-2.5 transition-all duration-300 group hover:border-secondary/70 sm:left-6 sm:p-3"
             >
               <ChevronLeft className="w-6 h-6 text-secondary" />
               <div className="absolute top-0 left-0 w-2 h-2 bg-secondary opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -102,7 +102,7 @@ export function ImageModal({ isOpen, imageSrc, onClose, onPrev, onNext, hasMulti
                 e.stopPropagation();
                 onNext();
               }}
-              className="absolute right-6 z-10 p-3 bg-card/90 backdrop-blur-sm border-2 border-secondary/40 hover:border-secondary/70 transition-all duration-300 group"
+              className="absolute right-3 top-1/2 z-10 -translate-y-1/2 border-2 border-secondary/40 bg-card/90 p-2.5 transition-all duration-300 group hover:border-secondary/70 sm:right-6 sm:p-3"
             >
               <ChevronRight className="w-6 h-6 text-secondary" />
               <div className="absolute top-0 right-0 w-2 h-2 bg-secondary opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -116,7 +116,7 @@ export function ImageModal({ isOpen, imageSrc, onClose, onPrev, onNext, hasMulti
             exit={{ scale: 0.8, opacity: 0 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
             onClick={(e) => e.stopPropagation()}
-            className="relative max-w-6xl w-full max-h-[85vh] group"
+            className="relative group max-h-[82vh] w-full max-w-6xl sm:max-h-[85vh]"
           >
             {/* Glow effect */}
             <div className="absolute -inset-4 bg-gradient-to-br from-primary/20 via-secondary/20 to-accent/20 opacity-50 blur-2xl" />
@@ -126,7 +126,7 @@ export function ImageModal({ isOpen, imageSrc, onClose, onPrev, onNext, hasMulti
               <img
                 src={imageSrc}
                 alt="Aperçu agrandi"
-                className="w-full h-full object-contain max-h-[85vh]"
+                className="h-full max-h-[82vh] w-full object-contain sm:max-h-[85vh]"
               />
 
               {/* Voxel corners */}

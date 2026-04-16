@@ -1,9 +1,13 @@
 import { motion } from 'motion/react';
 import { Heart, Code2 } from 'lucide-react';
+import { useLayoutMode } from './ui/layout-mode';
 
 export function Footer() {
+  const { isMobileLayout, detectedMobile } = useLayoutMode();
+  const compactLayout = detectedMobile || isMobileLayout;
+
   return (
-    <footer className="relative py-16 border-t-2 border-primary/20 bg-gradient-to-b from-card/40 to-background overflow-hidden">
+    <footer className="relative overflow-hidden border-t-2 border-primary/20 bg-gradient-to-b from-card/40 to-background py-14 sm:py-16">
       {/* Pixel grid background */}
       <div className="absolute inset-0 opacity-[0.01]" style={{
         backgroundImage: `
@@ -15,12 +19,16 @@ export function Footer() {
       }} />
 
       {/* Decorative voxels */}
-      <div className="absolute top-8 left-10 w-6 h-6 border-2 border-primary/20" />
-      <div className="absolute bottom-8 right-10 w-4 h-4 bg-secondary/10" />
-      <div className="absolute top-1/2 right-20 w-3 h-3 bg-accent/10" />
+      {!compactLayout && (
+        <>
+          <div className="absolute left-10 top-8 h-6 w-6 border-2 border-primary/20" />
+          <div className="absolute bottom-8 right-10 h-4 w-4 bg-secondary/10" />
+          <div className="absolute right-20 top-1/2 h-3 w-3 bg-accent/10" />
+        </>
+      )}
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid md:grid-cols-3 gap-12 mb-12">
+        <div className="mb-10 grid gap-8 md:grid-cols-3 md:gap-12 md:mb-12">
           {/* Brand */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -37,7 +45,7 @@ export function Footer() {
               <span className="text-primary tracking-widest font-display text-lg">Eva Commenne</span>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Chargée de communication digitale & veille stratégique
+              Chargée de communication digitale &amp; veille stratégique
             </p>
             <div className="mt-4 flex gap-2">
               <div className="w-2 h-2 bg-primary" />
@@ -118,7 +126,7 @@ export function Footer() {
           <div className="absolute top-0 left-0 w-12 h-0.5 bg-primary" />
           <div className="absolute top-0 right-0 w-12 h-0.5 bg-secondary" />
 
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
+          <div className="flex flex-col items-center justify-between gap-4 text-center text-sm text-muted-foreground sm:flex-row sm:text-left">
             <div className="flex items-center gap-2">
               <span className="font-mono">© 2026 Eva Commenne.</span>
               <span className="hidden sm:inline">Tous droits réservés.</span>
@@ -138,25 +146,29 @@ export function Footer() {
               >
                 <Heart className="w-4 h-4 text-primary fill-primary" />
               </motion.div>
-              <span>&</span>
+              <span>&amp;</span>
               <Code2 className="w-4 h-4 text-secondary" />
             </div>
           </div>
         </motion.div>
 
         {/* Enhanced Decorative Pixels */}
-        <motion.div
-          className="absolute bottom-6 left-6 w-3 h-3 bg-primary/40"
-          animate={{ opacity: [0.3, 0.6, 0.3] }}
-          transition={{ duration: 3, repeat: Infinity }}
-        />
-        <motion.div
-          className="absolute bottom-6 right-6 w-3 h-3 bg-secondary/40"
-          animate={{ opacity: [0.3, 0.6, 0.3] }}
-          transition={{ duration: 3, repeat: Infinity, delay: 1 }}
-        />
-        <div className="absolute top-6 left-10 w-2 h-2 bg-accent/20" />
-        <div className="absolute top-6 right-10 w-2 h-2 bg-primary/20" />
+        {!compactLayout && (
+          <>
+            <motion.div
+              className="absolute bottom-6 left-6 h-3 w-3 bg-primary/40"
+              animate={{ opacity: [0.3, 0.6, 0.3] }}
+              transition={{ duration: 3, repeat: Infinity }}
+            />
+            <motion.div
+              className="absolute bottom-6 right-6 h-3 w-3 bg-secondary/40"
+              animate={{ opacity: [0.3, 0.6, 0.3] }}
+              transition={{ duration: 3, repeat: Infinity, delay: 1 }}
+            />
+            <div className="absolute left-10 top-6 h-2 w-2 bg-accent/20" />
+            <div className="absolute right-10 top-6 h-2 w-2 bg-primary/20" />
+          </>
+        )}
       </div>
     </footer>
   );
