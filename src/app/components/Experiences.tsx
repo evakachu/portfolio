@@ -71,7 +71,7 @@ const experiences = [
     year: '2020-2026',
     role: 'Création de contenu',
     company: 'TikTok, Twitter, Twitch, Instagram, YouTube',
-    type: 'Création de contenu',
+    type: 'Expérience Professionnelle',
     description: 'Création et publication régulière de contenus multi-plateformes : vidéos, streams, tweets, posts visuels. Formats adaptés à chaque plateforme, montage créatif et approche orientée engagement et performance. Construction d\'une communauté fidèle et développement d\'une présence digitale forte.',
     tags: ['Vidéo', 'Streaming', 'Multi-plateformes', 'Créativité', 'Community Building'],
     images: [],
@@ -84,7 +84,7 @@ const experiences = [
 
 const getIconForType = (type: string) => {
   if (type === 'Exercice') return Award;
-  if (type === 'Création de contenu') return Video;
+  if (type === 'Création de contenu' || type === 'Expérience Professionnelle') return Video;
   return Briefcase;
 };
 
