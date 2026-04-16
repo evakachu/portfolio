@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { PixelInput, PixelTextarea } from './PixelInput';
 import { PixelButton } from './PixelButton';
 
+const FORM_ENDPOINT = 'https://formsubmit.co/ajax/evacmn@outlook.fr';
+
 const contactInfo = [
   {
     icon: Mail,
@@ -25,14 +27,66 @@ export function Contact() {
     email: '',
     message: '',
   });
+  const [honeypot, setHoneypot] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitState, setSubmitState] = useState<{
+    type: 'idle' | 'success' | 'error';
+    message: string;
+  }>({
+    type: 'idle',
+    message: '',
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Ouvrir le client email avec les données du formulaire
-    const mailtoLink = `mailto:evacmn@outlook.fr?subject=Contact depuis le portfolio - ${formData.name}&body=${encodeURIComponent(
-      `Nom: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`
-    )}`;
-    window.location.href = mailtoLink;
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+    setSubmitState({ type: 'idle', message: '' });
+
+    try {
+      const response = await fetch(FORM_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+          _subject: `Nouveau message depuis le portfolio - ${formData.name}`,
+          _replyto: formData.email,
+          _template: 'table',
+          _honey: honeypot,
+        }),
+      });
+
+      const result = await response.json().catch(() => null);
+
+      if (!response.ok || result?.success === false || result?.success === 'false') {
+        throw new Error(result?.message || 'L’envoi du message a échoué.');
+      }
+
+      setSubmitState({
+        type: 'success',
+        message: 'Votre message a bien été envoyé. Je vous répondrai rapidement.',
+      });
+      setFormData({
+        name: '',
+        email: '',
+        message: '',
+      });
+      setHoneypot('');
+    } catch (error) {
+      console.error(error);
+      setSubmitState({
+        type: 'error',
+        message: "L'envoi automatique a échoué. Vous pouvez réessayer ou utiliser mon adresse email affichée à gauche.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -83,7 +137,7 @@ export function Contact() {
             transition={{
               duration: 6 + i,
               repeat: Infinity,
-              ease: "easeInOut",
+              ease: 'easeInOut',
               delay: i * 0.5,
             }}
           />
@@ -121,7 +175,7 @@ export function Contact() {
             Travaillons ensemble
           </h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Un projet, une question ou simplement envie d'échanger ? Je serais ravie de vous répondre !
+            Un projet, une question ou simplement envie d&apos;échanger ? Je serais ravie de vous répondre !
           </p>
         </motion.div>
 
@@ -209,7 +263,7 @@ export function Contact() {
                 <div>
                   <h4 className="mb-2 text-primary">Disponible pour des opportunités</h4>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    Je suis actuellement ouverte aux collaborations, missions freelance et opportunités professionnelles 
+                    Je suis actuellement ouverte aux collaborations, missions freelance et opportunités professionnelles
                     en communication digitale et veille stratégique.
                   </p>
                 </div>
@@ -233,6 +287,19 @@ export function Contact() {
 
               <h3 className="text-xl mb-6">Envoyez-moi un message</h3>
               <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="hidden" aria-hidden="true">
+                  <label htmlFor="company">Company</label>
+                  <input
+                    id="company"
+                    type="text"
+                    name="company"
+                    value={honeypot}
+                    onChange={(e) => setHoneypot(e.target.value)}
+                    tabIndex={-1}
+                    autoComplete="off"
+                  />
+                </div>
+
                 <div>
                   <label htmlFor="name" className="block text-sm mb-2 font-mono">
                     Nom
@@ -275,10 +342,28 @@ export function Contact() {
                   />
                 </div>
 
-                <PixelButton type="submit" variant="primary" className="w-full justify-center">
+                <PixelButton
+                  type="submit"
+                  variant="primary"
+                  className="w-full justify-center"
+                  disabled={isSubmitting}
+                >
                   <Send className="w-5 h-5" />
-                  <span>Envoyer le message</span>
+                  <span>{isSubmitting ? 'Envoi en cours...' : 'Envoyer le message'}</span>
                 </PixelButton>
+
+                {submitState.type !== 'idle' && (
+                  <div
+                    className={`border px-4 py-3 text-sm leading-relaxed ${
+                      submitState.type === 'success'
+                        ? 'bg-primary/10 border-primary/30 text-primary'
+                        : 'bg-card/60 border-secondary/30 text-muted-foreground'
+                    }`}
+                    aria-live="polite"
+                  >
+                    {submitState.message}
+                  </div>
+                )}
               </form>
             </div>
           </motion.div>

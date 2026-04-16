@@ -6,6 +6,7 @@ interface PixelButtonProps {
   variant?: 'primary' | 'secondary' | 'accent' | 'ghost';
   className?: string;
   onClick?: () => void;
+  disabled?: boolean;
   type?: 'button' | 'submit' | 'reset';
 }
 
@@ -14,6 +15,7 @@ export function PixelButton({
   variant = 'primary',
   className = '',
   onClick,
+  disabled = false,
   type = 'button'
 }: PixelButtonProps) {
   const variantStyles = {
@@ -53,14 +55,16 @@ export function PixelButton({
     <motion.button
       type={type}
       onClick={onClick}
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
+      disabled={disabled}
+      whileHover={disabled ? undefined : { scale: 1.02 }}
+      whileTap={disabled ? undefined : { scale: 0.98 }}
       className={`
         relative group px-6 py-3
         ${style.bg} ${style.text} ${style.hover}
         border-2 ${style.border}
         transition-all duration-300
         overflow-hidden
+        disabled:cursor-not-allowed disabled:opacity-70
         ${style.glow}
         ${className}
       `}
