@@ -309,7 +309,7 @@ export function Hero() {
               <motion.a
                 href="#contact"
                 onClick={(e) => handleNavClick(e, '#contact')}
-                className={`group relative overflow-hidden border-2 border-accent/40 px-6 py-3 text-center text-foreground transition-all duration-300 hover:border-accent hover:bg-accent/10 ${
+                className={`group relative flex items-center justify-center gap-2 overflow-hidden border-2 border-accent/40 px-6 py-3 text-center text-foreground transition-all duration-300 hover:border-accent hover:bg-accent/10 ${
                   compactLayout ? 'w-full sm:w-auto' : ''
                 }`}
                 whileHover={{ scale: 1.02 }}
