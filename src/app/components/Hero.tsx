@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowDown, Sparkles, Code2, Users } from 'lucide-react';
+import { ArrowDown, Sparkles, Code2, Users, Download } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import heroImageOne from '../../imports/IMG_2633.jpeg';
 import heroImageTwo from '../../imports/IMG_3755.jpeg';
@@ -13,6 +13,7 @@ export function Hero() {
   const { isMobileLayout, detectedMobile } = useLayoutMode();
   const compactLayout = detectedMobile || isMobileLayout;
   const floatingParticles = compactLayout ? 8 : 20;
+  const cvDownloadUrl = `${import.meta.env.BASE_URL}eva-commenne-cv.pdf`;
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -261,6 +262,19 @@ export function Hero() {
               >
                 <div className="absolute inset-0 origin-left scale-x-0 bg-accent/5 transition-transform duration-300 group-hover:scale-x-100" />
                 <span className="relative z-10">Me contacter</span>
+              </motion.a>
+              <motion.a
+                href={cvDownloadUrl}
+                download="Eva-Commenne-CV.pdf"
+                className={`group relative flex items-center justify-center gap-2 overflow-hidden border-2 border-primary/30 bg-card px-6 py-3 text-foreground transition-all duration-300 hover:border-primary hover:bg-primary/10 ${
+                  compactLayout ? 'w-full sm:w-auto' : ''
+                }`}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <div className="absolute inset-0 translate-y-[100%] bg-primary/5 transition-transform duration-300 group-hover:translate-y-0" />
+                <Download className="relative z-10 h-5 w-5 text-primary" />
+                <span className="relative z-10">Télécharger mon CV</span>
               </motion.a>
             </motion.div>
           </motion.div>
