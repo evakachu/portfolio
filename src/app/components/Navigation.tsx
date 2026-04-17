@@ -2,31 +2,30 @@ import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { Menu, X } from 'lucide-react';
 import { useLayoutMode, type LayoutMode } from './ui/layout-mode';
+import { useLanguage, type Language } from './ui/language';
 
-const navItems = [
-  { label: 'Accueil', href: '#hero' },
-  { label: 'À propos', href: '#about' },
-  { label: 'Compétences', href: '#skills' },
-  { label: 'Expériences', href: '#experiences' },
-  { label: 'Formation', href: '#education' },
-  { label: 'Contact', href: '#contact' },
-];
-
-const layoutOptions: Array<{ label: string; value: LayoutMode }> = [
-  { label: 'Auto', value: 'auto' },
-  { label: 'Mobile', value: 'mobile' },
-  { label: 'Ordi', value: 'desktop' },
+const languageOptions: Array<{ label: string; value: Language }> = [
+  { label: 'FR', value: 'fr' },
+  { label: 'ENG', value: 'en' },
 ];
 
 function LayoutModeSelector({
   layoutMode,
   setLayoutMode,
+  labels,
   compact = false,
 }: {
   layoutMode: LayoutMode;
   setLayoutMode: (nextMode: LayoutMode) => void;
+  labels: { auto: string; mobile: string; desktop: string };
   compact?: boolean;
 }) {
+  const layoutOptions: Array<{ label: string; value: LayoutMode }> = [
+    { label: labels.auto, value: 'auto' },
+    { label: labels.mobile, value: 'mobile' },
+    { label: labels.desktop, value: 'desktop' },
+  ];
+
   return (
     <div
       className={`inline-flex items-center gap-1 border-2 border-primary/20 bg-card/85 p-1 backdrop-blur-md ${
@@ -59,11 +58,110 @@ function LayoutModeSelector({
   );
 }
 
+function LanguageSelector({
+  language,
+  setLanguage,
+  compact = false,
+}: {
+  language: Language;
+  setLanguage: (nextLanguage: Language) => void;
+  compact?: boolean;
+}) {
+  return (
+    <div
+      className={`inline-flex items-center gap-1 border-2 border-secondary/20 bg-card/85 p-1 backdrop-blur-md ${
+        compact ? 'w-full' : ''
+      }`}
+    >
+      {languageOptions.map((option) => {
+        const isActive = language === option.value;
+
+        return (
+          <button
+            key={option.value}
+            type="button"
+            onClick={() => setLanguage(option.value)}
+            aria-pressed={isActive}
+            className={`relative flex items-center justify-center px-3 py-2 text-[11px] font-mono uppercase tracking-[0.2em] transition-all duration-300 ${
+              compact ? 'flex-1' : ''
+            } ${
+              isActive
+                ? 'bg-secondary text-secondary-foreground shadow-[0_0_18px_rgba(111,211,255,0.22)]'
+                : 'text-muted-foreground hover:bg-secondary/10 hover:text-foreground'
+            }`}
+          >
+            <span className="relative z-10">{option.label}</span>
+            {isActive && <span className="absolute right-1 top-1 h-1.5 w-1.5 bg-secondary-foreground/70" />}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 export function Navigation() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { layoutMode, setLayoutMode, isMobileLayout, detectedMobile, resolvedLayoutMode } =
     useLayoutMode();
+  const { language, setLanguage } = useLanguage();
+
+  const copy =
+    language === 'fr'
+      ? {
+          navItems: [
+            { label: 'Accueil', href: '#hero' },
+            { label: 'À propos', href: '#about' },
+            { label: 'Compétences', href: '#skills' },
+            { label: 'Expériences', href: '#experiences' },
+            { label: 'Formation', href: '#education' },
+            { label: 'Contact', href: '#contact' },
+          ],
+          layout: {
+            auto: 'Auto',
+            mobile: 'Mobile',
+            desktop: 'Ordi',
+            title: "Choisir l'affichage",
+            description:
+              "Auto suit l'écran, Mobile compacte davantage, Ordi garde une mise en page plus large quand l'espace le permet.",
+            current: layoutMode === 'auto' ? 'Auto' : resolvedLayoutMode === 'mobile' ? 'Mobile' : 'Ordi',
+            currentView: resolvedLayoutMode === 'mobile' ? 'Vue mobile' : 'Vue ordi',
+          },
+          language: {
+            title: 'Langue',
+          },
+          menu: {
+            open: 'Ouvrir le menu',
+            close: 'Fermer le menu',
+          },
+        }
+      : {
+          navItems: [
+            { label: 'Home', href: '#hero' },
+            { label: 'About', href: '#about' },
+            { label: 'Skills', href: '#skills' },
+            { label: 'Experience', href: '#experiences' },
+            { label: 'Education', href: '#education' },
+            { label: 'Contact', href: '#contact' },
+          ],
+          layout: {
+            auto: 'Auto',
+            mobile: 'Mobile',
+            desktop: 'Desktop',
+            title: 'Choose layout',
+            description:
+              'Auto follows the screen, Mobile compacts the interface more, Desktop keeps a wider layout whenever space allows.',
+            current: layoutMode === 'auto' ? 'Auto' : resolvedLayoutMode === 'mobile' ? 'Mobile' : 'Desktop',
+            currentView: resolvedLayoutMode === 'mobile' ? 'Mobile view' : 'Desktop view',
+          },
+          language: {
+            title: 'Language',
+          },
+          menu: {
+            open: 'Open menu',
+            close: 'Close menu',
+          },
+        };
 
   const useCompactNavigation = detectedMobile || isMobileLayout;
 
@@ -120,7 +218,7 @@ export function Navigation() {
             <motion.a
               href="#hero"
               onClick={(e) => handleNavClick(e, '#hero')}
-              className="relative group cursor-pointer"
+              className="group relative cursor-pointer"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -142,7 +240,7 @@ export function Navigation() {
                     EC
                   </span>
                   <span className="hidden text-[10px] font-mono uppercase tracking-[0.22em] text-muted-foreground sm:block">
-                    {resolvedLayoutMode === 'mobile' ? 'Vue mobile' : 'Vue ordi'}
+                    {copy.layout.currentView}
                   </span>
                 </div>
               </div>
@@ -150,10 +248,17 @@ export function Navigation() {
 
             {!useCompactNavigation && (
               <div className="flex items-center gap-4">
-                <LayoutModeSelector layoutMode={layoutMode} setLayoutMode={setLayoutMode} />
+                <div className="flex items-center gap-2">
+                  <LayoutModeSelector
+                    layoutMode={layoutMode}
+                    setLayoutMode={setLayoutMode}
+                    labels={copy.layout}
+                  />
+                  <LanguageSelector language={language} setLanguage={setLanguage} />
+                </div>
 
                 <div className="flex items-center gap-1">
-                  {navItems.map((item) => (
+                  {copy.navItems.map((item) => (
                     <a
                       key={item.href}
                       href={item.href}
@@ -177,14 +282,15 @@ export function Navigation() {
             {useCompactNavigation && (
               <div className="flex items-center gap-2">
                 <div className="hidden rounded-none border border-primary/20 bg-card/70 px-2 py-1 text-[10px] font-mono uppercase tracking-[0.22em] text-muted-foreground sm:block">
-                  {layoutMode === 'auto' ? 'Auto' : resolvedLayoutMode === 'mobile' ? 'Mobile' : 'Ordi'}
+                  {copy.layout.current}
                 </div>
+                <LanguageSelector language={language} setLanguage={setLanguage} />
                 <button
                   type="button"
                   onClick={() => setMobileMenuOpen((current) => !current)}
                   className="group relative border-2 border-primary/30 bg-card/50 p-2 text-foreground transition-colors hover:border-primary/60 hover:bg-primary/10 hover:text-primary"
                   aria-expanded={mobileMenuOpen}
-                  aria-label={mobileMenuOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
+                  aria-label={mobileMenuOpen ? copy.menu.close : copy.menu.open}
                 >
                   {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                   <div className="absolute right-0 top-0 h-1.5 w-1.5 bg-primary opacity-0 transition-opacity group-hover:opacity-100" />
@@ -216,18 +322,32 @@ export function Navigation() {
 
           <div className="relative flex min-h-full flex-col justify-between gap-10 px-6 pb-10">
             <div className="mx-auto w-full max-w-sm space-y-6">
-              <div className="space-y-3 pt-2">
-                <p className="text-center text-xs font-mono uppercase tracking-[0.28em] text-primary/80">
-                  Choisir l&apos;affichage
-                </p>
-                <LayoutModeSelector layoutMode={layoutMode} setLayoutMode={setLayoutMode} compact />
-                <p className="text-center text-xs leading-relaxed text-muted-foreground">
-                  Auto suit l&apos;écran, Mobile compacte davantage, Ordi garde une mise en page plus large quand l&apos;espace le permet.
-                </p>
+              <div className="space-y-4 pt-2">
+                <div className="space-y-3">
+                  <p className="text-center text-xs font-mono uppercase tracking-[0.28em] text-secondary/80">
+                    {copy.language.title}
+                  </p>
+                  <LanguageSelector language={language} setLanguage={setLanguage} compact />
+                </div>
+
+                <div className="space-y-3">
+                  <p className="text-center text-xs font-mono uppercase tracking-[0.28em] text-primary/80">
+                    {copy.layout.title}
+                  </p>
+                  <LayoutModeSelector
+                    layoutMode={layoutMode}
+                    setLayoutMode={setLayoutMode}
+                    labels={copy.layout}
+                    compact
+                  />
+                  <p className="text-center text-xs leading-relaxed text-muted-foreground">
+                    {copy.layout.description}
+                  </p>
+                </div>
               </div>
 
               <div className="flex flex-col items-center justify-center gap-7 pt-4">
-                {navItems.map((item, index) => (
+                {copy.navItems.map((item, index) => (
                   <motion.a
                     key={item.href}
                     href={item.href}

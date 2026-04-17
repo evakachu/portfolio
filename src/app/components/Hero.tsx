@@ -5,15 +5,70 @@ import heroImageOne from '../../imports/IMG_2633.jpeg';
 import heroImageTwo from '../../imports/IMG_3755.jpeg';
 import heroImageThree from '../../imports/IMG_3756.jpeg';
 import { useLayoutMode } from './ui/layout-mode';
+import { useLanguage } from './ui/language';
 
 const images = [heroImageOne, heroImageTwo, heroImageThree];
+const pillStyles = [
+  { border: 'border-primary/30', bg: 'bg-primary/5', accent: 'bg-primary', edge: 'left' },
+  { border: 'border-secondary/30', bg: 'bg-secondary/5', accent: 'bg-secondary', edge: 'right' },
+  { border: 'border-accent/30', bg: 'bg-accent/5', accent: 'bg-accent', edge: 'bottom' },
+  { border: 'border-primary/30', bg: 'bg-primary/5', accent: 'bg-primary', edge: 'right' },
+] as const;
 
 export function Hero() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const { isMobileLayout, detectedMobile } = useLayoutMode();
+  const { language } = useLanguage();
   const compactLayout = detectedMobile || isMobileLayout;
   const floatingParticles = compactLayout ? 8 : 20;
   const cvDownloadUrl = `${import.meta.env.BASE_URL}eva-commenne-cv.pdf`;
+
+  const copy =
+    language === 'fr'
+      ? {
+          badge: 'Portfolio 2026',
+          rolePrimary: 'Chargée de communication digitale &',
+          roleSecondary: 'veille stratégique',
+          intro:
+            "J'accompagne votre projet dans le développement d'une présence digitale cohérente, créative et stratégique.",
+          description:
+            "Spécialisée en communication digitale, création de contenu et stratégie éditoriale, je mets plus de 7 ans d'expérience autodidacte au service d'identités fortes, de contenus engageants et de stratégies pensées pour générer de la visibilité et de l'impact.",
+          actions: {
+            experiences: 'Voir mes expériences',
+            education: 'Ma formation',
+            contact: 'Me contacter',
+            cv: 'Télécharger mon CV',
+          },
+          pills: [
+            '📍 Nancy & Paris, France',
+            'Bac+5 (en cours)',
+            '24 ans',
+            'Permis B',
+          ],
+          imageButtonLabel: (index: number) => `Afficher la photo ${index + 1}`,
+        }
+      : {
+          badge: 'Portfolio 2026',
+          rolePrimary: 'Digital Communication &',
+          roleSecondary: 'Strategic Intelligence',
+          intro:
+            'I support your project with a digital presence that is coherent, creative, and strategically built.',
+          description:
+            'Specialized in digital communication, content creation, and editorial strategy, I bring more than 7 years of self-taught experience to strong brand identities, engaging content, and strategies designed to drive visibility and impact.',
+          actions: {
+            experiences: 'View my experience',
+            education: 'My education',
+            contact: 'Contact me',
+            cv: 'Download my resume',
+          },
+          pills: [
+            '📍 Nancy & Paris, France',
+            "Master's degree (ongoing)",
+            '24 years old',
+            "Driver's license B",
+          ],
+          imageButtonLabel: (index: number) => `Show photo ${index + 1}`,
+        };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -117,7 +172,7 @@ export function Hero() {
               >
                 <Sparkles className="relative z-10 h-4 w-4 text-primary" />
               </motion.div>
-              <span className="relative z-10 font-mono text-sm tracking-wider text-primary">Portfolio 2026</span>
+              <span className="relative z-10 font-mono text-sm tracking-wider text-primary">{copy.badge}</span>
               <motion.div
                 className="absolute left-0 top-0 h-2 w-2 bg-primary"
                 animate={{ opacity: [1, 0.5, 1] }}
@@ -189,8 +244,8 @@ export function Hero() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.4, duration: 0.6 }}
               >
-                <span className="text-primary">Chargée de communication digitale &amp; </span>
-                <span className="text-accent">veille stratégique</span>
+                <span className="text-primary">{copy.rolePrimary} </span>
+                <span className="text-accent">{copy.roleSecondary}</span>
               </motion.span>
             </motion.h1>
 
@@ -200,7 +255,7 @@ export function Hero() {
               transition={{ delay: 0.4 }}
               className="mb-3 text-base leading-relaxed text-muted-foreground"
             >
-              J&apos;accompagne votre projet dans le développement d&apos;une présence digitale cohérente, créative et stratégique.
+              {copy.intro}
             </motion.p>
 
             <motion.p
@@ -209,7 +264,7 @@ export function Hero() {
               transition={{ delay: 0.5 }}
               className="mb-8 text-sm leading-relaxed text-muted-foreground"
             >
-              Spécialisée en communication digitale, création de contenu et stratégie éditoriale, je mets plus de 7 ans d&apos;expérience autodidacte au service d&apos;identités fortes, de contenus engageants et de stratégies pensées pour générer de la visibilité et de l&apos;impact.
+              {copy.description}
             </motion.p>
 
             <motion.div
@@ -235,7 +290,7 @@ export function Hero() {
                   transition={{ duration: 3, repeat: Infinity, repeatDelay: 2, ease: 'linear' }}
                 />
                 <Code2 className="relative z-10 h-5 w-5" />
-                <span className="relative z-10">Voir mes expériences</span>
+                <span className="relative z-10">{copy.actions.experiences}</span>
                 <div className="absolute right-0 top-0 h-2 w-2 bg-primary-foreground opacity-50" />
               </motion.a>
               <motion.a
@@ -249,7 +304,7 @@ export function Hero() {
               >
                 <div className="absolute inset-0 translate-y-[100%] bg-secondary/5 transition-transform duration-300 group-hover:translate-y-0" />
                 <Users className="relative z-10 h-5 w-5 text-secondary" />
-                <span className="relative z-10">Ma formation</span>
+                <span className="relative z-10">{copy.actions.education}</span>
               </motion.a>
               <motion.a
                 href="#contact"
@@ -261,7 +316,7 @@ export function Hero() {
                 whileTap={{ scale: 0.98 }}
               >
                 <div className="absolute inset-0 origin-left scale-x-0 bg-accent/5 transition-transform duration-300 group-hover:scale-x-100" />
-                <span className="relative z-10">Me contacter</span>
+                <span className="relative z-10">{copy.actions.contact}</span>
               </motion.a>
               <motion.a
                 href={cvDownloadUrl}
@@ -274,7 +329,7 @@ export function Hero() {
               >
                 <div className="absolute inset-0 translate-y-[100%] bg-primary/5 transition-transform duration-300 group-hover:translate-y-0" />
                 <Download className="relative z-10 h-5 w-5 text-primary" />
-                <span className="relative z-10">Télécharger mon CV</span>
+                <span className="relative z-10">{copy.actions.cv}</span>
               </motion.a>
             </motion.div>
           </motion.div>
@@ -406,7 +461,7 @@ export function Hero() {
                       }`}
                       whileHover={{ scale: 1.2 }}
                       whileTap={{ scale: 0.9 }}
-                      aria-label={`Afficher la photo ${index + 1}`}
+                      aria-label={copy.imageButtonLabel(index)}
                     />
                   ))}
                 </div>
@@ -457,34 +512,33 @@ export function Hero() {
               transition={{ delay: 0.8 }}
               className="mt-8 mx-auto grid w-full max-w-[18rem] grid-cols-2 gap-3 sm:max-w-md"
             >
-              {[
-                { label: '📍 Nancy & Paris, France', border: 'border-primary/30', bg: 'bg-primary/5', accent: 'bg-primary', edge: 'left' },
-                { label: 'Bac+5 (en cours)', border: 'border-secondary/30', bg: 'bg-secondary/5', accent: 'bg-secondary', edge: 'right' },
-                { label: '24 ans', border: 'border-accent/30', bg: 'bg-accent/5', accent: 'bg-accent', edge: 'bottom' },
-                { label: 'Permis B', border: 'border-primary/30', bg: 'bg-primary/5', accent: 'bg-primary', edge: 'right' },
-              ].map((pill, index) => (
-                <motion.div
-                  key={pill.label}
-                  className={`group relative flex min-h-[4.5rem] items-center justify-center overflow-hidden border-2 bg-card/90 px-4 py-2 text-center backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 ${pill.border}`}
-                  initial={{ opacity: 0, x: compactLayout ? 0 : -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.9 + index * 0.1 }}
-                >
-                  <div className={`absolute inset-0 ${pill.bg} translate-x-[-100%] transition-transform duration-300 group-hover:translate-x-0`} />
-                  <span className="relative z-10 block text-center font-mono text-sm text-muted-foreground">
-                    {pill.label}
-                  </span>
-                  <div
-                    className={`absolute h-1.5 w-1.5 ${pill.accent} ${
-                      pill.edge === 'left'
-                        ? 'left-0 top-0'
-                        : pill.edge === 'right'
-                          ? 'right-0 top-0'
-                          : 'bottom-0 right-0'
-                    }`}
-                  />
-                </motion.div>
-              ))}
+              {copy.pills.map((label, index) => {
+                const styles = pillStyles[index] ?? pillStyles[0];
+
+                return (
+                  <motion.div
+                    key={label}
+                    className={`group relative flex min-h-[4.5rem] items-center justify-center overflow-hidden border-2 bg-card/90 px-4 py-2 text-center backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 ${styles.border}`}
+                    initial={{ opacity: 0, x: compactLayout ? 0 : -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.9 + index * 0.1 }}
+                  >
+                    <div className={`absolute inset-0 ${styles.bg} translate-x-[-100%] transition-transform duration-300 group-hover:translate-x-0`} />
+                    <span className="relative z-10 block text-center font-mono text-sm text-muted-foreground">
+                      {label}
+                    </span>
+                    <div
+                      className={`absolute h-1.5 w-1.5 ${styles.accent} ${
+                        styles.edge === 'left'
+                          ? 'left-0 top-0'
+                          : styles.edge === 'right'
+                            ? 'right-0 top-0'
+                            : 'bottom-0 right-0'
+                      }`}
+                    />
+                  </motion.div>
+                );
+              })}
             </motion.div>
           </motion.div>
         </div>

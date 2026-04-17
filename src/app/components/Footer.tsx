@@ -1,24 +1,56 @@
 import { motion } from 'motion/react';
 import { Heart, Code2 } from 'lucide-react';
 import { useLayoutMode } from './ui/layout-mode';
+import { useLanguage } from './ui/language';
 
 export function Footer() {
   const { isMobileLayout, detectedMobile } = useLayoutMode();
+  const { language } = useLanguage();
   const compactLayout = detectedMobile || isMobileLayout;
+
+  const copy =
+    language === 'fr'
+      ? {
+          role: 'Chargée de communication digitale & veille stratégique',
+          navigationTitle: 'Navigation',
+          contactTitle: 'Contact',
+          links: [
+            { label: 'À propos', href: '#about' },
+            { label: 'Compétences', href: '#skills' },
+            { label: 'Expériences', href: '#experiences' },
+            { label: 'Formation', href: '#education' },
+          ],
+          rights: 'Tous droits réservés.',
+          madeWith: 'Créé avec',
+        }
+      : {
+          role: 'Digital communication & strategic intelligence',
+          navigationTitle: 'Navigation',
+          contactTitle: 'Contact',
+          links: [
+            { label: 'About', href: '#about' },
+            { label: 'Skills', href: '#skills' },
+            { label: 'Experience', href: '#experiences' },
+            { label: 'Education', href: '#education' },
+          ],
+          rights: 'All rights reserved.',
+          madeWith: 'Made with',
+        };
 
   return (
     <footer className="relative overflow-hidden border-t-2 border-primary/20 bg-gradient-to-b from-card/40 to-background py-14 sm:py-16">
-      {/* Pixel grid background */}
-      <div className="absolute inset-0 opacity-[0.01]" style={{
-        backgroundImage: `
-          linear-gradient(rgba(91, 229, 132, 0.6) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(91, 229, 132, 0.6) 1px, transparent 1px)
-        `,
-        backgroundSize: '32px 32px',
-        imageRendering: 'pixelated',
-      }} />
+      <div
+        className="absolute inset-0 opacity-[0.01]"
+        style={{
+          backgroundImage: `
+            linear-gradient(rgba(91, 229, 132, 0.6) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(91, 229, 132, 0.6) 1px, transparent 1px)
+          `,
+          backgroundSize: '32px 32px',
+          imageRendering: 'pixelated',
+        }}
+      />
 
-      {/* Decorative voxels */}
       {!compactLayout && (
         <>
           <div className="absolute left-10 top-8 h-6 w-6 border-2 border-primary/20" />
@@ -27,48 +59,39 @@ export function Footer() {
         </>
       )}
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-10 grid gap-8 md:grid-cols-3 md:gap-12 md:mb-12">
-          {/* Brand */}
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-10 grid gap-8 md:mb-12 md:grid-cols-3 md:gap-12">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <div className="flex items-center gap-3 mb-6">
-              <div className="relative w-10 h-10 bg-gradient-to-br from-primary/20 to-secondary/20 border-2 border-primary/40 flex items-center justify-center">
-                <div className="w-5 h-5 bg-primary" style={{ boxShadow: '0 0 20px rgba(91, 229, 132, 0.6)' }} />
-                <div className="absolute top-0 left-0 w-1.5 h-1.5 bg-primary" />
-                <div className="absolute bottom-0 right-0 w-1.5 h-1.5 bg-secondary" />
+            <div className="mb-6 flex items-center gap-3">
+              <div className="relative flex h-10 w-10 items-center justify-center border-2 border-primary/40 bg-gradient-to-br from-primary/20 to-secondary/20">
+                <div className="h-5 w-5 bg-primary" style={{ boxShadow: '0 0 20px rgba(91, 229, 132, 0.6)' }} />
+                <div className="absolute left-0 top-0 h-1.5 w-1.5 bg-primary" />
+                <div className="absolute bottom-0 right-0 h-1.5 w-1.5 bg-secondary" />
               </div>
-              <span className="text-primary tracking-widest font-display text-lg">Eva Commenne</span>
+              <span className="font-display text-lg tracking-widest text-primary">Eva Commenne</span>
             </div>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Chargée de communication digitale &amp; veille stratégique
-            </p>
+            <p className="text-sm leading-relaxed text-muted-foreground">{copy.role}</p>
             <div className="mt-4 flex gap-2">
-              <div className="w-2 h-2 bg-primary" />
-              <div className="w-2 h-2 bg-secondary" />
-              <div className="w-2 h-2 bg-accent" />
+              <div className="h-2 w-2 bg-primary" />
+              <div className="h-2 w-2 bg-secondary" />
+              <div className="h-2 w-2 bg-accent" />
             </div>
           </motion.div>
 
-          {/* Quick Links */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
-            <h4 className="mb-6 text-sm font-display tracking-wider">Navigation</h4>
+            <h4 className="mb-6 text-sm font-display tracking-wider">{copy.navigationTitle}</h4>
             <div className="space-y-3">
-              {[
-                { label: 'À propos', href: '#about' },
-                { label: 'Compétences', href: '#skills' },
-                { label: 'Expériences', href: '#experiences' },
-                { label: 'Formation', href: '#education' },
-              ].map((link) => (
+              {copy.links.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
@@ -79,60 +102,55 @@ export function Footer() {
                       element.scrollIntoView({ behavior: 'smooth' });
                     }
                   }}
-                  className="group relative flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-all duration-300"
+                  className="group relative flex items-center gap-2 text-sm text-muted-foreground transition-all duration-300 hover:text-primary"
                 >
-                  <div className="w-2 h-2 bg-primary/30 group-hover:bg-primary transition-colors" />
-                  <span className="group-hover:translate-x-1 transition-transform duration-200">
-                    {link.label}
-                  </span>
+                  <div className="h-2 w-2 bg-primary/30 transition-colors group-hover:bg-primary" />
+                  <span className="transition-transform duration-200 group-hover:translate-x-1">{link.label}</span>
                 </a>
               ))}
             </div>
           </motion.div>
 
-          {/* Contact */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <h4 className="mb-6 text-sm font-display tracking-wider">Contact</h4>
+            <h4 className="mb-6 text-sm font-display tracking-wider">{copy.contactTitle}</h4>
             <div className="space-y-3 text-sm">
               <a
                 href="mailto:evacmn@outlook.fr"
-                className="group flex items-center gap-2 text-muted-foreground hover:text-secondary transition-colors"
+                className="group flex items-center gap-2 text-muted-foreground transition-colors hover:text-secondary"
               >
-                <div className="w-1.5 h-1.5 bg-secondary/30 group-hover:bg-secondary transition-colors" />
+                <div className="h-1.5 w-1.5 bg-secondary/30 transition-colors group-hover:bg-secondary" />
                 <span className="font-mono">evacmn@outlook.fr</span>
               </a>
               <p className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 bg-accent/30" />
+                <div className="h-1.5 w-1.5 bg-accent/30" />
                 <span className="text-muted-foreground">Nancy &amp; Paris, France</span>
               </p>
             </div>
           </motion.div>
         </div>
 
-        {/* Bottom Bar */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="relative pt-8 border-t-2 border-primary/20"
+          className="relative border-t-2 border-primary/20 pt-8"
         >
-          {/* Pixel accent on border */}
-          <div className="absolute top-0 left-0 w-12 h-0.5 bg-primary" />
-          <div className="absolute top-0 right-0 w-12 h-0.5 bg-secondary" />
+          <div className="absolute left-0 top-0 h-0.5 w-12 bg-primary" />
+          <div className="absolute right-0 top-0 h-0.5 w-12 bg-secondary" />
 
           <div className="flex flex-col items-center justify-between gap-4 text-center text-sm text-muted-foreground sm:flex-row sm:text-left">
             <div className="flex items-center gap-2">
               <span className="font-mono">© 2026 Eva Commenne.</span>
-              <span className="hidden sm:inline">Tous droits réservés.</span>
+              <span className="hidden sm:inline">{copy.rights}</span>
             </div>
             <div className="flex items-center gap-2">
-              <span>Créé avec</span>
+              <span>{copy.madeWith}</span>
               <motion.div
                 animate={{
                   scale: [1, 1.2, 1],
@@ -141,18 +159,17 @@ export function Footer() {
                 transition={{
                   duration: 2,
                   repeat: Infinity,
-                  ease: "easeInOut",
+                  ease: 'easeInOut',
                 }}
               >
-                <Heart className="w-4 h-4 text-primary fill-primary" />
+                <Heart className="h-4 w-4 fill-primary text-primary" />
               </motion.div>
               <span>&amp;</span>
-              <Code2 className="w-4 h-4 text-secondary" />
+              <Code2 className="h-4 w-4 text-secondary" />
             </div>
           </div>
         </motion.div>
 
-        {/* Enhanced Decorative Pixels */}
         {!compactLayout && (
           <>
             <motion.div
