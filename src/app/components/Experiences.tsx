@@ -265,9 +265,9 @@ export function Experiences() {
                                   whileInView={{ opacity: 1, scale: 1 }}
                                   viewport={{ once: true }}
                                   transition={{ duration: 0.5, delay: 0.4 + statIndex * 0.1 }}
-                                  className="relative group"
+                                  className="relative group h-full"
                                 >
-                                  <div className="relative overflow-hidden border-2 border-primary/30 bg-gradient-to-br from-primary/10 to-secondary/10 p-5 transition-all duration-300 group-hover:border-primary/60 sm:p-6">
+                                  <div className="relative flex h-full overflow-hidden border-2 border-primary/30 bg-gradient-to-br from-primary/10 to-secondary/10 p-5 transition-all duration-300 group-hover:border-primary/60 sm:p-6">
                                     {/* XP Gain Animation */}
                                     <motion.div
                                       className="absolute inset-0 bg-gradient-to-t from-primary/20 to-transparent"
@@ -289,7 +289,7 @@ export function Experiences() {
                                     <div className="absolute bottom-0 left-0 w-2 h-2 bg-accent" />
                                     <div className="absolute bottom-0 right-0 w-2 h-2 bg-primary" />
 
-                                    <div className="relative z-10 text-center">
+                                    <div className="relative z-10 flex w-full flex-col items-center justify-center text-center">
                                       <motion.div
                                         className="text-4xl mb-3"
                                         animate={{
@@ -311,7 +311,7 @@ export function Experiences() {
                                       >
                                         {stat.value}
                                       </motion.div>
-                                      <div className="text-sm text-muted-foreground font-mono">
+                                      <div className="flex min-h-[2.5rem] items-center text-sm text-muted-foreground font-mono">
                                         {stat.label}
                                       </div>
                                     </div>
